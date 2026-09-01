@@ -55,3 +55,15 @@ def make_time_axis(audio):
     time_seconds = time / audio.sample_rate
     return time_seconds
 
+def normalize(samples, audio):
+    if audio.sample_width == 1:
+        shift = samples - ((2**8) / 2)    #subtract max bit divided by 2 to find the center of range
+        return shift / ((2**8) / 2)       #(Unsigned so its 0-255 instead of -128 to 127)
+    elif audio.sample_width == 2:
+        return samples / ((2**16) / 2)    #signed int so need to divide max bit by 2 (account for - and +)
+    elif audio.sample_width == 4:
+        return samples / ((2**32) / 2)    #same story here
+    else:
+        raise ValueError("NORMALIZE: Unsupported sample width")
+
+

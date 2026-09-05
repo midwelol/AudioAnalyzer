@@ -86,5 +86,8 @@ def peak_amp(samples):
 def find_rms(samples):
     return np.sqrt(np.mean(samples**2))
 
+def to_dbfs(value):
+    return 20 * np.log10(value)
+
 
 

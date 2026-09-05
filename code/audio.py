@@ -66,8 +66,8 @@ def to_mono(samples, audio):
 
 def make_time_axis(audio):
     time = np.arange(audio.num_frames)
-    time_seconds = time / audio.sample_rate
-    return time_seconds
+    time_axis = time / audio.sample_rate
+    return time_axis
 
 def normalize(samples, audio):
     if audio.sample_width == 1:
@@ -88,6 +88,15 @@ def find_rms(samples):
 
 def to_dbfs(value):
     return 20 * np.log10(value)
+
+def plot_waveform(time_axis, samples):
+    plt.plot(time_axis, samples)
+    plt.xlabel("Time (seconds)")
+    plt.ylabel("Amplitude")
+    plt.title("Amplitude vs Time")
+    plt.show()
+
+
 
 
 

@@ -1,10 +1,10 @@
-from audio import load_audio, decode_samples, to_mono, make_time_axis, normalize, peak_amp, create_wave, make_wave, find_rms, to_dbfs
+from audio import load_audio, decode_samples, to_mono, make_time_axis, normalize, peak_amp, create_wave, make_wave, find_rms, to_dbfs, plot_waveform
 import numpy as np
 
 
 sr = 44100
 
-created_wave = create_wave(0.25, 440, 2, sr)
+created_wave = create_wave(0.25, 440, 0.1, sr)
 
 make_wave("test_tone.wav", sr, created_wave)
 audio = load_audio("test_tone.wav")
@@ -13,6 +13,8 @@ mono = to_mono(decoded_audio, audio)
 normalized = normalize(mono, audio)
 peak = peak_amp(normalized)
 root_mean_square = find_rms(normalized)
+time_axis = make_time_axis(audio)
+
 
 print("Sample Rate", audio.sample_rate)
 print("Frames", audio.num_frames)
@@ -23,3 +25,7 @@ print("Expected RMS: ", peak / np.sqrt(2))
 print("RMS: ", root_mean_square)
 print("Peak amp (dbfs): ", to_dbfs(peak))
 print("RMS (dbfs): ", to_dbfs(root_mean_square))
+
+
+plot_waveform(time_axis, normalized)
+

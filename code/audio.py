@@ -2,6 +2,7 @@ import wave
 import numpy as np
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
+import scipy.io
 
 @dataclass
 class Audio:
@@ -11,6 +12,18 @@ class Audio:
     num_frames: int
     data: bytes
 
+
+def create_wave(amp, freq, duration, sr_wave):
+    sample_count = int(duration * sr_wave)
+    test_time = np.arange(sample_count)
+    test_time_seconds = test_time / sr_wave
+    gen_wave = amp * np.sin((2 * np.pi) * freq * test_time_seconds)
+    gen_wave = gen_wave * 32767                                         #convert to int16
+    gen_wave = gen_wave.astype(np.int16)
+    return gen_wave
+
+def make_wave(filename, sr, gen_wave):
+    scipy.io.wavfile.write(filename, sr, gen_wave)
 
 
 def load_audio(filename):
@@ -22,7 +35,8 @@ def load_audio(filename):
             num_frames = w.getnframes()
             data = w.readframes(num_frames)
     except wave.Error:
-        raise ValueError("Loader doesnt support float32 files")
+        raise ValueError("Could not read WAV file")
+
     return Audio(sample_rate, sample_width, channels, num_frames, data)
 
 def decode_samples(audio):
@@ -65,5 +79,9 @@ def normalize(samples, audio):
         return samples / ((2**32) / 2)    #same story here
     else:
         raise ValueError("NORMALIZE: Unsupported sample width")
+
+def peak_amp(samples):
+    return np.max(np.abs(samples))
+
 
 

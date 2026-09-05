@@ -83,5 +83,8 @@ def normalize(samples, audio):
 def peak_amp(samples):
     return np.max(np.abs(samples))
 
+def find_rms(samples):
+    return np.sqrt(np.mean(samples**2))
+
 
 

@@ -3,7 +3,6 @@ import numpy as np
 from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import scipy.io
-
 @dataclass
 class Audio:
     sample_rate: int
@@ -87,6 +86,8 @@ def find_rms(samples):
     return np.sqrt(np.mean(samples**2))
 
 def to_dbfs(value):
+    if value <= 0:
+        return -np.inf
     return 20 * np.log10(value)
 
 def plot_waveform(time_axis, samples):
@@ -95,6 +96,30 @@ def plot_waveform(time_axis, samples):
     plt.ylabel("Amplitude")
     plt.title("Amplitude vs Time")
     plt.show()
+
+def find_common_frequencies(samples, audio):
+    fft_result = np.fft.rfft(samples)
+    magnitudes = np.abs(fft_result)
+    n = samples.size
+    frequencies = np.fft.rfftfreq(n, 1.0/audio.sample_rate)
+    return frequencies, magnitudes
+
+
+
+def plot_common_frequencies(frequencies, magnitudes):
+    plt.plot(frequencies, magnitudes)
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude")
+    plt.title("Common Frequencies")
+    plt.show()
+
+def find_dominant_frequency(frequencies, magnitudes):
+    max_mag_index = np.argmax(magnitudes)
+    return frequencies[max_mag_index]
+
+
+
+
 
 
 

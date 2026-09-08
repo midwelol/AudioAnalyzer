@@ -27,7 +27,7 @@ def make_wave(filename, sr, gen_wave):
 
 def load_audio(filename):
     try:
-        with wave.open(filename, "rb") as w:
+        with wave.open(str(filename), "rb") as w:
             sample_rate = w.getframerate()
             sample_width = w.getsampwidth()
             channels = w.getnchannels()

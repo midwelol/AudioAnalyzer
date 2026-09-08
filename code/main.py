@@ -1,4 +1,4 @@
-from audio import load_audio, decode_samples, to_mono, make_time_axis, normalize, peak_amp, create_wave, make_wave, find_rms, to_dbfs, plot_waveform
+from audio import load_audio, decode_samples, to_mono, make_time_axis, normalize, peak_amp, create_wave, make_wave, find_rms, to_dbfs, plot_waveform, find_common_frequencies, plot_common_frequencies, find_dominant_frequency
 import numpy as np
 
 
@@ -14,7 +14,8 @@ normalized = normalize(mono, audio)
 peak = peak_amp(normalized)
 root_mean_square = find_rms(normalized)
 time_axis = make_time_axis(audio)
-
+freq, mag = find_common_frequencies(normalized, audio)
+dominant = find_dominant_frequency(freq, mag)
 
 print("Sample Rate", audio.sample_rate)
 print("Frames", audio.num_frames)
@@ -25,7 +26,11 @@ print("Expected RMS: ", peak / np.sqrt(2))
 print("RMS: ", root_mean_square)
 print("Peak amp (dbfs): ", to_dbfs(peak))
 print("RMS (dbfs): ", to_dbfs(root_mean_square))
+print(np.max(mag))
+print(peak * len(normalized) / 2)
+print("Dominant Frequency: ", dominant)
 
 
-plot_waveform(time_axis, normalized)
+
+plot_common_frequencies(freq, mag)
 

@@ -86,9 +86,16 @@ def find_rms(samples):
     return np.sqrt(np.mean(samples**2))
 
 def to_dbfs(value):
-    if value <= 0:
-        return -np.inf
-    return 20 * np.log10(value)
+    if np.isscalar(value):
+        if value <= 0:
+            return -np.inf
+        return 20 * np.log10(value)
+
+    result = np.full_like(value, -np.inf, dtype=float)
+    positive = value > 0
+    result[positive] = 20 * np.log10(value[positive])
+
+    return result
 
 def plot_waveform(time_axis, samples):
     plt.plot(time_axis, samples)
@@ -116,6 +123,14 @@ def plot_common_frequencies(frequencies, magnitudes):
 def find_dominant_frequency(frequencies, magnitudes):
     max_mag_index = np.argmax(magnitudes)
     return frequencies[max_mag_index]
+
+def plot_frequency_dbfs(frequencies, dbfs):
+    plt.plot(frequencies, dbfs)
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("dBFS")
+    plt.title("Frequency Spectrum")
+    plt.ylim(-120, 3)
+    plt.show()
 
 
 

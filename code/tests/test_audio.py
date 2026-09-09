@@ -55,6 +55,54 @@ def test_dominant_frequency(tmp_path):
     tolerance = 10
     assert abs(dominant_frequency_test - expected_dominant_frequency) <= tolerance, f"Expected dominant frequency ~{expected_dominant_frequency}, got {dominant_frequency_test}"
 
+@pytest.mark.parametrize("test_freq", [100, 440, 1000, 5000])
+def test_multiple_frequencies(tmp_path, test_freq):
+    # Verify the FFT identifies several known frequencies.
+    amp = 0.25
+    duration = 0.1
+    sr_wave = 44100
+
+    test_signal = create_wave(amp, test_freq, duration, sr_wave)
+    test_file = tmp_path / f"{test_freq}_hz_test.wav"
+    make_wave(test_file, sr_wave, test_signal)
+
+    audio = load_audio(test_file)
+    decoded_audio = decode_samples(audio)
+    mono = to_mono(decoded_audio, audio)
+    normalized = normalize(mono, audio)
+
+    frequencies, amplitudes = find_frequency_spectrum(normalized, audio)
+    dominant_frequency = find_dominant_frequency(frequencies, amplitudes)
+
+    tolerance = 10
+
+    assert abs(dominant_frequency - test_freq) <= tolerance
+
+def test_fft_amplitude(tmp_path):
+    # Verify that Hann window correction preserves the amplitude of a sine wave.
+    amp = 0.25
+    test_freq = 440
+    duration = 0.1
+    sr_wave = 44100
+
+    test_signal = create_wave(amp, test_freq, duration, sr_wave)
+    test_file = tmp_path / "fft_amplitude_test.wav"
+    make_wave(test_file, sr_wave, test_signal)
+
+    audio = load_audio(test_file)
+    decoded_audio = decode_samples(audio)
+    mono = to_mono(decoded_audio, audio)
+    normalized = normalize(mono, audio)
+
+    frequencies, amplitudes = find_frequency_spectrum(normalized, audio)
+
+    dominant_index = np.argmax(amplitudes)
+    measured_amplitude = amplitudes[dominant_index]
+
+    tolerance = 0.02
+
+    assert abs(measured_amplitude - amp) <= tolerance
+
 def test_rms(tmp_path):
     # Verify RMS against the theoretical RMS value of a sine wave.
     amp = 0.25

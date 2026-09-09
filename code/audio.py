@@ -144,13 +144,26 @@ def plot_waveform(time_axis, samples):
 
 
 # Calculate the frequency spectrum using a real-valued FFT.
-def find_common_frequencies(samples, audio):
-    fft_result = np.fft.rfft(samples)
-    magnitudes = np.abs(fft_result)
+def find_frequency_spectrum(samples, audio):
     n = samples.size
+    window = np.hanning(n)
+    windowed_samples = samples * window
+
+    fft_result = np.fft.rfft(windowed_samples)
+    magnitudes = np.abs(fft_result)
     frequencies = np.fft.rfftfreq(n, 1.0/audio.sample_rate)
 
-    return frequencies, magnitudes
+    # Correct for the Hann window's coherent gain.
+    amplitudes = magnitudes * (2.0 / np.sum(window))
+
+    # DC should not be doubled.
+    amplitudes[0] /= 2
+
+    # Nyquist should not be doubled for an even-length signal.
+    if n % 2 == 0:
+        amplitudes[-1] /= 2
+
+    return frequencies, amplitudes
 
 
 # Plot the FFT magnitude spectrum.

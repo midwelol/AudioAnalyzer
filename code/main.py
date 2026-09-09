@@ -6,7 +6,7 @@ from audio import (
     peak_amp,
     find_rms,
     to_dbfs,
-    find_common_frequencies,
+    find_frequency_spectrum,
     find_dominant_frequency,
     plot_frequency_dbfs,
     make_time_axis,
@@ -29,13 +29,13 @@ root_mean_square = find_rms(normalized)
 
 # Create the time axis and calculate the frequency spectrum using an FFT.
 time_axis = make_time_axis(audio)
-freq, mag = find_common_frequencies(normalized, audio)
-dominant = find_dominant_frequency(freq, mag)
+freq, amplitudes = find_frequency_spectrum(normalized, audio)
+dominant = find_dominant_frequency(freq, amplitudes)
 
 # Convert the FFT magnitude to amplitude and then to dBFS.
 mag_to_amp = 2 * mag / normalized.size
-mag_dbfs = to_dbfs(mag_to_amp)
-fft_peak = np.max(mag_dbfs)
+amplitudes_dbfs = to_dbfs(mag_to_amp)
+fft_peak = np.max(amplitudes_dbfs)
 
 # Display audio properties and calculated measurements.
 print("Sample Rate", audio.sample_rate)
@@ -59,9 +59,9 @@ choice = int(input("Enter your choice: "))
 if choice == 1:
     plot_waveform(time_axis, normalized)
 elif choice == 2:
-    plot_frequency_dbfs(freq, mag_dbfs)
+    plot_frequency_dbfs(freq, amplitudes_dbfs)
 elif choice == 3:
-    plot_both(time_axis, normalized, freq, mag_dbfs)
+    plot_both(time_axis, normalized, freq, amplitudes_dbfs)
 else:
     print("Invalid choice")
 

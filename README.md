@@ -75,6 +75,7 @@ This project uses a Hann window before performing the FFT. The FFT amplitude is 
 
 ## Project Structure
 
+```text
 AudioAnalyzer/
 ├── code/
 │   ├── tests/
@@ -83,6 +84,7 @@ AudioAnalyzer/
 │   └── main.py
 ├── .gitignore
 └── README.md
+```
 
 ### audio.py
 

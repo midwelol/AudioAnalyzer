@@ -33,10 +33,8 @@ freq, amplitudes = find_frequency_spectrum(normalized, audio)
 dominant = find_dominant_frequency(freq, amplitudes)
 
 # Convert the FFT magnitude to amplitude and then to dBFS.
-mag_to_amp = 2 * mag / normalized.size
-amplitudes_dbfs = to_dbfs(mag_to_amp)
+amplitudes_dbfs = to_dbfs(amplitudes)
 fft_peak = np.max(amplitudes_dbfs)
-
 # Display audio properties and calculated measurements.
 print("Sample Rate", audio.sample_rate)
 print("Frames", audio.num_frames)
